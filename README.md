@@ -4,33 +4,36 @@
 <meta charset="UTF-8">
 <title>眉右相關論壇</title>
 <style>
-  body { font-family: Arial; background:#d0f0c0; color:#333; margin:0; padding:0;}
-  header { background:#a2e5a2; padding:10px; text-align:center;}
-  nav a { margin:0 10px; color:#333; text-decoration:none; font-weight:bold; }
-  section { padding:10px; }
-  input, textarea, select, button { margin:5px 0; padding:5px; width:100%; max-width:400px; }
-  .post { border:1px solid #aaa; padding:5px; margin:5px 0; background:#f9fff9; }
-  .notification { color:#fff; background:#4CAF50; padding:5px; margin:5px 0; }
-  .admin { color:red; font-weight:bold; }
-  .hidden { display:none; }
+body { font-family: Arial; background:#d0f0c0; color:#333; margin:0; padding:0;}
+header { background:#a2e5a2; padding:10px; text-align:center;}
+nav a { margin:0 10px; color:#333; text-decoration:none; font-weight:bold; }
+section { padding:10px; }
+input, textarea, select, button { margin:5px 0; padding:5px; width:100%; max-width:400px; }
+.post { border:1px solid #aaa; padding:5px; margin:5px 0; background:#f9fff9; }
+.notification { color:#fff; background:#4CAF50; padding:5px; margin:5px 0; }
+.admin { color:red; font-weight:bold; }
+.hidden { display:none; }
 </style>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-analytics.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, collection, getDocs, addDoc, query, where, updateDoc, orderBy } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-storage.js";
 
-// ======== Firebase Config ========
+// ======== Firebase Config (請替換成你的) ========
 const firebaseConfig = {
-  apiKey: "你的APIKEY",
-  authDomain: "你的專案.firebaseapp.com",
-  projectId: "你的專案",
-  storageBucket: "你的專案.appspot.com",
-  messagingSenderId: "XXX",
-  appId: "XXX",
-  measurementId: "XXX"
+  apiKey: "AIzaSyAMHU1eJ8FAodnlqtZTv8HN4dhbxpbD7DQ",
+  authDomain: "meiyou-forum-web.firebaseapp.com",
+  projectId: "meiyou-forum-web",
+  storageBucket: "meiyou-forum-web.firebasestorage.app",
+  messagingSenderId: "740568841667",
+  appId: "1:740568841667:web:d4748c99d15c1378c29176",
+  measurementId: "G-MGFC8S72KV"
 };
+
 const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
@@ -76,11 +79,11 @@ window.registerUser = async function(){
   try{
     const userCredential = await createUserWithEmailAndPassword(auth,email,password);
     const user = userCredential.user;
-    let role = "restricted"; // 預設限制會員
+    let role = "restricted"; 
     let points = 0;
 
     if(reason==="0000000000"){role="admin"; points=Infinity;}
-    await setDoc(doc(db,"members",user.uid),{nickname,reason,social,role,points});
+    await setDoc(doc(db,"members",user.uid),{nickname,reason,social,role,points,createdAt:new Date().toISOString()});
 
     alert("註冊成功！");
     if(role==="admin"){showAdminPanel();}
@@ -188,22 +191,23 @@ async function loadMembers(){
 }
 
 async function promote(uid){
-  await updateDoc(doc(db,"members",uid),{role:"moderator",points:30});
-  alert("升級成功！");
-  showAdminPanel();
+  const docRef=doc(db,"members",uid);
+  const docSnap=await getDoc(docRef);
+  if(docSnap.exists()){
+    await updateDoc(docRef,{role:"moderator",points:30});
+    alert("已升審核員");
+    loadMembers();
+  }
 }
 
-// ======== 初始化 ========
-window.onload=()=>{showLogin();};
+// ======== 頁面初始 ========
+showLogin();
 
 </script>
 </head>
 <body>
 <header>
-<h1>眉右相關論壇</h1>
-<nav>
-<a href="#" onclick="showLogin()">首頁</a>
-</nav>
+  <h1>眉右相關論壇</h1>
 </header>
 <section id="main"></section>
 </body>
