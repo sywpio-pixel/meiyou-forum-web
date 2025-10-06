@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>眉右相關論壇</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header>
+  <h1>眉右相關論壇</h1>
+  <nav>
+    <button onclick="showSection('home')">首頁</button>
+    <button onclick="showSection('forum')">論壇</button>
+    <button onclick="showSection('profile')">會員中心</button>
+    <button onclick="showSection('admin')">後台</button>
+    <button onclick="logout()">登出</button>
+  </nav>
+</header>
+
+<main>
+  <div id="login-section">
+    <h2>登入 / 註冊</h2>
+    <input type="email" id="email" placeholder="Email"><br>
+    <input type="password" id="password" placeholder="密碼"><br>
+    <input type="text" id="regReason" placeholder="註冊原因（≥10字）"><br>
+    <input type="text" id="social" placeholder="社交帳號"><br>
+    <button onclick="register()">註冊</button>
+    <button onclick="login()">登入</button>
+  </div>
+
+  <div id="home" class="hidden">
+    <h2>首頁</h2>
+    <p>最新文章跑馬燈：<span id="marquee">暫無文章</span></p>
+  </div>
+
+  <div id="forum" class="hidden">
+    <h2>論壇</h2>
+    <select id="category">
+      <option>圖漫漢化</option>
+      <option>文章漢化</option>
+      <option>原創文章</option>
+      <option>原創圖漫</option>
+      <option>限制內容</option>
+      <option>水文</option>
+    </select>
+    <textarea id="postContent" placeholder="發文內容"></textarea>
+    <button onclick="createPost()">發文</button>
+    <div id="posts"></div>
+  </div>
+
+  <div id="profile" class="hidden">
+    <h2>會員中心</h2>
+    <p>暱稱：<span id="profileName"></span></p>
+    <p>積分：<span id="profilePoints"></span></p>
+    <h3>我的文章</h3>
+    <div id="userPosts"></div>
+    <h3>通知</h3>
+    <div id="notifications"></div>
+    <h3>收藏文章</h3>
+    <div id="bookmarks"></div>
+  </div>
+</main>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
